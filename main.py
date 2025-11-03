@@ -36,33 +36,45 @@ class Consumer:
         "9": ["W", "X", "Y", "Z"]
     }
 
-# ljust is used to pad the string on the right with '0's until it reaches length 11
     def validate(self, phone_number):
         if len(phone_number) > 11:
-            phone_number = phone_number[-11:]
+            last_char = phone_number[11]
+            phone_number = phone_number[:11]
+
+            if phone_number[10] == '-':
+                phone_number = phone_number[:10] + last_char
+
         if len(phone_number) < 11:
             phone_number = phone_number.ljust(11, '0')
+
         return phone_number
 
-    def decode(self, phone_number):
+    
+    def get_letter_code(self, letter):
+        letter = letter.upper()
+        for number, letters in self.phone_number_map.items():
+            if letter in letters:
+                presses = letters.index(letter) + 1
+                return number * presses 
+        return letter
+
+    def decode(self, phone_text):
         result = ""
-        for char in phone_number.upper():
-            for number, letters in self.phone_number_map.items():
-                if char in letters:
-                    result += number
-                    break
+        for char in phone_text.upper():
+            if char.isalpha():
+                result += self.get_letter_code(char)
             else:
                 result += char
         return result
-    
+
 # You might want to adjust the sleep times for testing purposes
     def consume(self, queue, producer_done):
         while True:
             if not queue.is_empty():
                 phone_number = queue.dequeue()
-                validated_number = self.validate(phone_number)
-                decoded_number = self.decode(validated_number)
-                print(f"[Consumer] {phone_number} -> {decoded_number}")
+                decodednumber = self.decode(phone_number)
+                trunqued_number = self.validate(decodednumber)
+                print(f"[Consumer] {phone_number} -> {trunqued_number}")
                 time.sleep(2)
             elif producer_done.is_set():
                 print("[Consumer] No more phone numbers")
@@ -115,4 +127,5 @@ def main():
     consumer_thread.join()
 
 if __name__ == "__main__":
+    #print(len('800-8337-7778'))
     main()
