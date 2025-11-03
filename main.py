@@ -2,7 +2,6 @@ import json
 import threading
 import time
 
-
 class Queue:
     limit = 10
 
@@ -37,6 +36,7 @@ class Consumer:
         "9": ["W", "X", "Y", "Z"]
     }
 
+# ljust is used to pad the string on the right with '0's until it reaches length 11
     def validate(self, phone_number):
         if len(phone_number) > 11:
             phone_number = phone_number[-11:]
@@ -54,7 +54,8 @@ class Consumer:
             else:
                 result += char
         return result
-
+    
+# You might want to adjust the sleep times for testing purposes
     def consume(self, queue, producer_done):
         while True:
             if not queue.is_empty():
@@ -62,11 +63,13 @@ class Consumer:
                 validated_number = self.validate(phone_number)
                 decoded_number = self.decode(validated_number)
                 print(f"[Consumer] {phone_number} -> {decoded_number}")
+                time.sleep(2)
             elif producer_done.is_set():
                 print("[Consumer] No more phone numbers")
                 break
             else:
-                time.sleep(0.5)
+                #wait till there is something in the queue
+                time.sleep(3)
 
 class Producer:
     def __init__(self, phone_numbers):
