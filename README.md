@@ -4,7 +4,7 @@
 
 ## Instrucciones 
 
-##Ejecutar proyecto 
+## Ejecutar proyecto 
 ```bash
 python main.py
 ```
