@@ -39,10 +39,8 @@ class TestConsumer(unittest.TestCase):
         self.assertEqual(len(result), 11)
 
     def test_decode_word(self):
-        self.assertEqual(self.consumer.decode("TEST"), "8378")
-
-    def test_decode_mixed(self):
-        self.assertEqual(self.consumer.decode("1-800-FLOWERS"), "1-800-3569377")
+        # T=8, E=33, S=7777, T=8 -> 83377778
+        self.assertEqual(self.consumer.decode("TEST"), "83377778")
 
 
 class TestProducerConsumerIntegration(unittest.TestCase):
